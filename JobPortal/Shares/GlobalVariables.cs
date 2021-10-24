@@ -65,13 +65,8 @@ namespace JobPortal.Shares
         public static int ScanCountryTable = int.Parse(ConfigurationManager.AppSettings["ScanCountryTable"]);
         public static readonly Int16 CompanyCode = SystemUtility.ConvertToInt<Int16>(ConfigurationManager.AppSettings["CompanyCode"]);
         public static string FilterSetting = ConfigurationManager.AppSettings["FilterSetting"];
-        public static string APIURI = ConfigurationManager.AppSettings["APIURI"];
-        public static string ES_GETTOKEN_APIURI = ConfigurationManager.AppSettings["ES_GETTOKEN_APIURI"];
-        public static string ES_GETTOKEN_APIName = ConfigurationManager.AppSettings["ES_GETTOKEN_APIName"];
-        public static string ES_SEARCH_APIURI = ConfigurationManager.AppSettings["ES_SEARCH_APIURI"];
-        public static string ES_SEARCH_APIName = ConfigurationManager.AppSettings["ES_SEARCH_APIName"];
 
-        public static readonly string ConnectionString = ConfigurationManager.ConnectionStrings["TBMLBulk"].ConnectionString;   //.ConnectionStrings["TBMLBulk"];
+        public static readonly string ConnectionString = ConfigurationManager.ConnectionStrings["JobPortalDB"].ConnectionString;   //.ConnectionStrings["JobPortalDB"];
 
         public static ConnectionProviders ConnectionProvider
         {

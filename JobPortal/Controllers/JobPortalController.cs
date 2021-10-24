@@ -19,60 +19,6 @@ namespace JobPortal.Controllers
         public string aaa = "";
         private JobPortalContext db = new JobPortalContext();
 
-        // GET: api/JobPortal
-        public IQueryable<cor_code> Getcor_code()
-        {
-            return db.cor_code;
-        }
-
-        // GET: api/JobPortal/5
-        [ResponseType(typeof(cor_code))]
-        public IHttpActionResult Getcor_code(int id)
-        {
-            cor_code cor_code = db.cor_code.Find(id);
-            if (cor_code == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(cor_code);
-        }
-
-        // PUT: api/JobPortal/5
-        [ResponseType(typeof(void))]
-        public IHttpActionResult Putcor_code(int id, cor_code cor_code)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != cor_code.cor_CodeNo)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(cor_code).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!cor_codeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
         [HttpGet]
         [Route("api/GetConfigCodesDtl")]
         [ActionName("LoadNew")]
@@ -436,10 +382,24 @@ namespace JobPortal.Controllers
             throw new HttpResponseException(HttpStatusCode.Unauthorized);
         }
 
-        [HttpPost]
-        [Route("api/GetDropDownItemsWfTemplate")]
+        [HttpGet]
+        [Route("api/GetJobList")]
         [ActionName("LoadNew")]
-        public IHttpActionResult GetDropDownItemsWfTemplate()
+        public List<JobList> GetJobList()
+        {
+            List<JobList> jobList = new List<JobList>();
+
+            using (var context = new JobPortalContext())
+            {
+                jobList = context.JobList.Select(s => s).ToList();
+            }
+            return jobList;
+        }
+
+        [HttpPost]
+        [Route("api/AddApplicant")]
+        [ActionName("LoadNew")]
+        public IHttpActionResult AddApplicant()
         {
             string formData;
             using (var reader = new StreamReader(HttpContext.Current.Request.InputStream))
@@ -448,62 +408,91 @@ namespace JobPortal.Controllers
             }
 
             var queryString = HttpUtility.ParseQueryString(HttpUtility.UrlDecode(formData));
-            var code_org = int.Parse(queryString["code_org"]);
-            var code_comp = int.Parse(queryString["code_comp"]);
-            var wf_module = int.Parse(queryString["wf_module"]);
 
-            //var codePrime = queryString["CODE_PRIME"];
-            //string[] splitCodePrime = codePrime.Split('|');
+            var firstName = queryString["firstName"];
+            var lastName = queryString["lastName"];
+            var jobId = queryString["jobId"];
+            var yearsExp = queryString["yearsExp"];
+            var prefLocation = queryString["prefLocation"];
+            var vacancyFoundIn = queryString["vacancyFoundIn"];
+            var noticePeriod = queryString["noticePeriod"];
+            var contactNo = queryString["contactNo"];
+            var address = queryString["address"];
+            var email = queryString["email"];
+            var fileName = queryString["fileName"];
+            var filePath = queryString["filePath"];
+            var fileEncode = queryString["fileEncode"];
 
             var status = true;
             var error_message = "";
-            //var json = "";
-            List<string> s;
-            List<codeInfo> dropDownList = new List<codeInfo>();
-            List<_CONFIG_WF_HDR> CodeList = new List<_CONFIG_WF_HDR>();
-            _CONFIG_WF_HDR codeDetail = new _CONFIG_WF_HDR(true);
-            //var comma = "";
+            Applicant applicantDtl = new Applicant();
+            Attachment AttachmentDtl = new Attachment();
+            //_PARAM_LICENSE paramLicenseDtl = new _PARAM_LICENSE(true);
+
             using (var context = new JobPortalContext())
             {
-                try
+                using (var txn = context.Database.BeginTransaction())
                 {
-                    //splitCodePrime[i] = splitCodePrime[i].Trim();
-                    //var codePrimes = Int32.Parse(splitCodePrime[i]);
-                    codeDetail.CODE_COMP = code_comp;
-                    codeDetail.CODE_ORG = code_comp;
-                    codeDetail.WF_MODULE = wf_module;
-
-                    //CodeList = manager.GetDropDownItemsWfTemplate(1, codeDetail);
-                    CodeList = context.CONFIG_WF_HDR.Where(d => d.CODE_COMP == codeDetail.CODE_COMP && d.CODE_ORG == codeDetail.CODE_ORG && d.WF_MODULE == codeDetail.WF_MODULE).ToList();
-
-                    foreach (var CL in CodeList)
+                    try
                     {
-                        codeInfo codeInfo = new codeInfo()
-                        {
-                            //CodePrime = CL.CODE_PRIME,
-                            wfId = CL.WF_ID,
-                            wfName = CL.WF_NAME,
-                            wfModule = CL.WF_MODULE
-                        };
-                        dropDownList.Add(codeInfo);
+                        //Insert Data
+                        applicantDtl.FirstName = firstName;
+                        applicantDtl.LastName = lastName;
+                        applicantDtl.JobTitle = jobId;
+                        applicantDtl.YearsExp = int.Parse(yearsExp);
+                        applicantDtl.PrefLocation = prefLocation;
+                        applicantDtl.VacancyFoundIn = vacancyFoundIn;
+                        applicantDtl.NoticePeriod = int.Parse(noticePeriod);
+                        applicantDtl.ContactNo = contactNo;
+                        applicantDtl.Address = address;
+                        applicantDtl.Email = email;
+                        context.Applicant.Add(applicantDtl);
+                        context.SaveChanges();
+
+                        txn.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        status = false;
+                        error_message = ex.InnerException.InnerException.Message;
+                        Console.WriteLine(ex.InnerException.InnerException.Message);
+                        //manager.insertIntoAuditMaster(userid.ToUpper(), token, 1, "Failed Add Org", 1);
                     }
                 }
-                catch (Exception ex)
+
+                using (var txn2 = context.Database.BeginTransaction())
                 {
-                    status = false;
-                    error_message = ex.InnerException.InnerException.Message;
-                    Console.WriteLine(ex.InnerException.InnerException.Message);
+                    try
+                    {
+                        //Insert Data
+                        AttachmentDtl.ApplicantID = applicantDtl.ApplicantID;
+                        AttachmentDtl.FileName = fileName;
+                        AttachmentDtl.FilePath = filePath;
+                        AttachmentDtl.FileEncode = fileEncode;
+                        AttachmentDtl.UploadedDt = DateTime.Now;
+                        AttachmentDtl.UploadedBy = firstName + ' ' + lastName;
+                        context.Attachment.Add(AttachmentDtl);
+
+                        context.SaveChanges();
+
+                        txn2.Commit();
+                        //manager.insertIntoAuditMaster(userid.ToUpper(), token, 1, "Success Add Org", 1);
+                    }
+                    catch (Exception ex)
+                    {
+                        status = false;
+                        error_message = ex.InnerException.InnerException.Message;
+                        Console.WriteLine(ex.InnerException.InnerException.Message);
+                        //manager.insertIntoAuditMaster(userid.ToUpper(), token, 1, "Failed Add Org", 1);
+                    }
                 }
             }
             if (status == true)
             {
-                var obj = new codeInfo
+                return Ok(new
                 {
-                };
-                return Json(new[] { new
-                {
-                    dropDownItems = dropDownList,
-                }});
+                    status = true
+                });
             }
             else
             {
@@ -513,511 +502,21 @@ namespace JobPortal.Controllers
                     error_message = "Error: " + error_message
                 });
             }
-
             throw new HttpResponseException(HttpStatusCode.Unauthorized);
         }
 
-        [HttpPost]
-        [Route("api/GetDropDownItemsWorkflow")]
+        [HttpGet]
+        [Route("api/GetCodeConfig")]
         [ActionName("LoadNew")]
-        public IHttpActionResult GetDropDownItemsWorkflow()
+        public List<CodeConfig> GetCodeConfig(int PrimeCode)
         {
-            string formData;
-            using (var reader = new StreamReader(HttpContext.Current.Request.InputStream))
-            {
-                formData = reader.ReadToEnd();
-            }
-
-            var queryString = HttpUtility.ParseQueryString(HttpUtility.UrlDecode(formData));
-            var code_org = int.Parse(queryString["code_org"]);
-            var wfModule = queryString["WF_MODULE"];
-            string[] splitwfModule = wfModule.Split('|');
-
-            //var codePrime = queryString["CODE_PRIME"];
-            //string[] splitCodePrime = codePrime.Split('|');
-
-            var status = true;
-            var error_message = "";
-            //var json = "";
-            List<string> s;
-            List<codeInfo> dropDownList = new List<codeInfo>();
-            List<_CONFIG_WF_HDR> CodeList = new List<_CONFIG_WF_HDR>();
-            _CONFIG_WF_HDR codeDetail = new _CONFIG_WF_HDR(true);
-            //var comma = "";
-            using (var context = new JobPortalContext())
-            {
-                for (int i = 0; i < splitwfModule.Length; i++)
-                {
-                    try
-                    {
-                        splitwfModule[i] = splitwfModule[i].Trim();
-                        var wfModules = Int32.Parse(splitwfModule[i]);
-                        codeDetail.WF_MODULE = wfModules;
-
-                        //splitCodePrime[i] = splitCodePrime[i].Trim();
-                        //var codePrimes = Int32.Parse(splitCodePrime[i]);
-                        //codeDetail.CODE_PRIME = codePrimes;
-                        //CodeList = manager.GetDropDownItemsWorkflow(1, codeDetail);
-                        CodeList = context.CONFIG_WF_HDR.Where(d => d.WF_MODULE == codeDetail.WF_MODULE).ToList();
-
-                        foreach (var CL in CodeList)
-                        {
-                            codeInfo codeInfo = new codeInfo()
-                            {
-                                wfModule = CL.WF_MODULE,
-                                wfId = CL.WF_ID,
-                                wfName = CL.WF_NAME
-                            };
-                            dropDownList.Add(codeInfo);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        status = false;
-                        error_message = ex.InnerException.InnerException.Message;
-                        Console.WriteLine(ex.InnerException.InnerException.Message);
-                    }
-                }
-                if (status == true)
-                {
-                    var obj = new codeInfo
-                    {
-                    };
-                    return Json(new[] { new
-                {
-                    dropDownItems = dropDownList,
-                }});
-                }
-                else
-                {
-                    return Ok(new
-                    {
-                        status = false,
-                        error_message = "Error: " + error_message
-                    });
-                }
-
-                throw new HttpResponseException(HttpStatusCode.Unauthorized);
-            }
-        }
-
-        [HttpPost]
-        [Route("api/GetDropDownScreeningTable")]
-        [ActionName("LoadNew")]
-        public IHttpActionResult GetDropDownScreeningTable()
-        {
-            string formData;
-            using (var reader = new StreamReader(HttpContext.Current.Request.InputStream))
-            {
-                formData = reader.ReadToEnd();
-            }
-
-            var queryString = HttpUtility.ParseQueryString(HttpUtility.UrlDecode(formData));
-            var code_org = int.Parse(queryString["code_org"]);
-            var mapProduct = queryString["MAP_PRODUCT"];
-            string[] splitmapProduct = mapProduct.Split('|');
-
-            var status = true;
-            var error_message = "";
-            //var json = "";
-            List<string> s;
-            List<codeInfoScreening> dropDownList = new List<codeInfoScreening>();
-            List<_PARAM_MAPPING_HDR> CodeList = new List<_PARAM_MAPPING_HDR>();
-            _PARAM_MAPPING_HDR codeDetail = new _PARAM_MAPPING_HDR(true);
-            //var comma = "";
-            using (var context = new JobPortalContext())
-            {
-                for (int i = 0; i < splitmapProduct.Length; i++)
-                {
-                    try
-                    {
-                        splitmapProduct[i] = splitmapProduct[i].Trim();
-                        var mapProducts = Int32.Parse(splitmapProduct[i]);
-                        codeDetail.MAP_PRODUCT = mapProducts;
-
-                        //splitCodePrime[i] = splitCodePrime[i].Trim();
-                        //var codePrimes = Int32.Parse(splitCodePrime[i]);
-                        //codeDetail.CODE_PRIME = codePrimes;
-                        //CodeList = manager.GetDropDownScreeningTable(1, codeDetail);
-                        CodeList = context.PARAM_MAPPING_HDR.Where(d => d.MAP_PRODUCT == codeDetail.MAP_PRODUCT).ToList();
-
-                        foreach (var CL in CodeList)
-                        {
-                            codeInfoScreening codeInfoScreening = new codeInfoScreening()
-                            {
-                                mapProduct = CL.MAP_PRODUCT,
-                                mapId = CL.MAP_ID_HDR,
-                                mapTable = CL.MAP_TABLE
-                            };
-                            dropDownList.Add(codeInfoScreening);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        status = false;
-                        error_message = ex.InnerException.InnerException.Message;
-                        Console.WriteLine(ex.InnerException.InnerException.Message);
-                    }
-                }
-                if (status == true)
-                {
-                    var obj = new codeInfo
-                    {
-                    };
-                    return Json(new[] { new
-                {
-                    dropDownItems = dropDownList,
-                }});
-                }
-                else
-                {
-                    return Ok(new
-                    {
-                        status = false,
-                        error_message = "Error: " + error_message
-                    });
-                }
-
-                throw new HttpResponseException(HttpStatusCode.Unauthorized);
-            }
-        }
-
-        [HttpPost]
-        [Route("api/GetDropDownScreeningField")]
-        [ActionName("LoadNew")]
-        public IHttpActionResult GetDropDownScreeningField()
-        {
-            string formData;
-            using (var reader = new StreamReader(HttpContext.Current.Request.InputStream))
-            {
-                formData = reader.ReadToEnd();
-            }
-
-            var queryString = HttpUtility.ParseQueryString(HttpUtility.UrlDecode(formData));
-            var code_org = int.Parse(queryString["code_org"]);
-            var mapProduct = queryString["MAP_PRODUCT"];
-            var mapField = queryString["MAP_TABLE_NAME"];
-
-            string[] splitmapProduct = mapProduct.Split('|');
-
-            var status = true;
-            var error_message = "";
-            //var json = "";
-            List<string> s;
-            List<codeInfoScreening> dropDownList = new List<codeInfoScreening>();
-            List<_PARAM_MAPPING_DTL> CodeList = new List<_PARAM_MAPPING_DTL>();
-            _PARAM_MAPPING_DTL codeDetail = new _PARAM_MAPPING_DTL(true);
-            //var comma = "";
-            using (var context = new JobPortalContext())
-            {
-                for (int i = 0; i < splitmapProduct.Length; i++)
-                {
-                    try
-                    {
-                        splitmapProduct[i] = splitmapProduct[i].Trim();
-                        var mapProducts = Int32.Parse(splitmapProduct[i]);
-                        codeDetail.MAP_PRODUCT = mapProducts;
-                        codeDetail.MAP_TABLE_NAME = mapField;
-
-                        //splitCodePrime[i] = splitCodePrime[i].Trim();
-                        //var codePrimes = Int32.Parse(splitCodePrime[i]);
-                        //codeDetail.CODE_PRIME = codePrimes;
-
-                        //CodeList = manager.GetDropDownScreeningField(3, codeDetail);
-                        CodeList = context.PARAM_MAPPING_DTL.Where(d => d.MAP_PRODUCT == codeDetail.MAP_PRODUCT && d.MAP_TABLE_NAME == codeDetail.MAP_TABLE_NAME && d.CONFIG_CODE != 0).ToList();
-
-                        foreach (var CL in CodeList)
-                        {
-                            codeInfoScreening codeInfoScreening = new codeInfoScreening()
-                            {
-                                mapProduct = CL.MAP_PRODUCT,
-                                config_code = CL.CONFIG_CODE,
-                                mapTable = CL.MAP_FIELD_NAME
-                            };
-                            dropDownList.Add(codeInfoScreening);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        status = false;
-                        error_message = ex.InnerException.InnerException.Message;
-                        Console.WriteLine(ex.InnerException.InnerException.Message);
-                    }
-                }
-                if (status == true)
-                {
-                    var obj = new codeInfo
-                    {
-                    };
-                    return Json(new[] { new
-                {
-                    dropDownItems = dropDownList,
-                }});
-                }
-                else
-                {
-                    return Ok(new
-                    {
-                        status = false,
-                        error_message = "Error: " + error_message
-                    });
-                }
-
-                throw new HttpResponseException(HttpStatusCode.Unauthorized);
-            }
-        }
-
-        [HttpPost]
-        [Route("api/GetDropDownScreeningFieldTarget")]
-        [ActionName("LoadNew")]
-        public IHttpActionResult GetDropDownScreeningFieldTarget()
-
-        {
-            string formData;
-            using (var reader = new StreamReader(HttpContext.Current.Request.InputStream))
-            {
-                formData = reader.ReadToEnd();
-            }
-
-            var queryString = HttpUtility.ParseQueryString(HttpUtility.UrlDecode(formData));
-            var code_org = int.Parse(queryString["code_org"]);
-            var mapProduct = queryString["MAP_PRODUCT"];
-            var mapField = queryString["MAP_TABLE_NAME"];
-
-            string[] splitmapProduct = mapProduct.Split('|');
-
-            var status = true;
-            var error_message = "";
-            //var json = "";
-            List<string> s;
-            List<codeInfoScreening> dropDownList = new List<codeInfoScreening>();
-            List<_PARAM_MAPPING_DTL> CodeList = new List<_PARAM_MAPPING_DTL>();
-            _PARAM_MAPPING_DTL codeDetail = new _PARAM_MAPPING_DTL(true);
-            //var comma = "";
-            using (var context = new JobPortalContext())
-            {
-                for (int i = 0; i < splitmapProduct.Length; i++)
-                {
-                    try
-                    {
-                        splitmapProduct[i] = splitmapProduct[i].Trim();
-                        var mapProducts = Int32.Parse(splitmapProduct[i]);
-                        codeDetail.MAP_PRODUCT = mapProducts;
-                        codeDetail.MAP_TABLE_NAME = mapField;
-
-                        //splitCodePrime[i] = splitCodePrime[i].Trim();
-                        //var codePrimes = Int32.Parse(splitCodePrime[i]);
-                        //codeDetail.CODE_PRIME = codePrimes;
-
-                        //CodeList = manager.GetDropDownScreeningField(4, codeDetail);
-                        CodeList = context.PARAM_MAPPING_DTL.Where(d => d.MAP_PRODUCT == codeDetail.MAP_PRODUCT && d.MAP_TABLE_NAME == codeDetail.MAP_TABLE_NAME && d.CONFIG_WATCHLIST == 1).ToList();
-
-                        foreach (var CL in CodeList)
-                        {
-                            codeInfoScreening codeInfoScreening = new codeInfoScreening()
-                            {
-                                mapProduct = CL.MAP_PRODUCT,
-                                mapId = CL.MAP_ID_DTL,
-                                mapTable = CL.MAP_FIELD_NAME
-                            };
-                            dropDownList.Add(codeInfoScreening);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        status = false;
-                        error_message = ex.InnerException.InnerException.Message;
-                        Console.WriteLine(ex.InnerException.InnerException.Message);
-                    }
-                }
-                if (status == true)
-                {
-                    var obj = new codeInfoScreening
-                    {
-                    };
-                    return Json(new[] { new
-                {
-                    dropDownItems = dropDownList,
-                }});
-                }
-                else
-                {
-                    return Ok(new
-                    {
-                        status = false,
-                        error_message = "Error: " + error_message
-                    });
-                }
-
-                throw new HttpResponseException(HttpStatusCode.Unauthorized);
-            }
-        }
-
-        [HttpPost]
-        [Route("api/GetDropDownScreeningFormula")]
-        [ActionName("LoadNew")]
-        public IHttpActionResult GetDropDownScreeningFormula()
-
-        {
-            string formData;
-            using (var reader = new StreamReader(HttpContext.Current.Request.InputStream))
-            {
-                formData = reader.ReadToEnd();
-            }
-
-            var queryString = HttpUtility.ParseQueryString(HttpUtility.UrlDecode(formData));
-            var code_org = int.Parse(queryString["code_org"]);
-            //var mapProduct = queryString["MAP_PRODUCT"];
-            var mapTable = queryString["MAP_TABLE_NAME"];
-            var mapField = queryString["MAP_FIELD_NAME"];
-
-            //string[] splitmapProduct = mapProduct.Split('|');
-
-            var status = true;
-            var error_message = "";
-            //var json = "";
-            List<string> s;
-            List<codeInfoFormula> dropDownList = new List<codeInfoFormula>();
-            List<INFORMATION_SCHEMA_COLUMNS> CodeList = new List<INFORMATION_SCHEMA_COLUMNS>();
-            _INFORMATION_SCHEMA_COLUMNS codeDetail = new _INFORMATION_SCHEMA_COLUMNS(true);
-            //var comma = "";
-            using (var context = new JobPortalContext())
-            {
-                try
-                {
-                    //splitmapProduct[i] = splitmapProduct[i].Trim();
-                    //var mapProducts = Int32.Parse(splitmapProduct[i]);
-                    codeDetail.COLUMN_NAME = mapField;
-                    codeDetail.TABLE_NAME = mapTable;
-
-                    //splitCodePrime[i] = splitCodePrime[i].Trim();
-                    //var codePrimes = Int32.Parse(splitCodePrime[i]);
-                    //codeDetail.CODE_PRIME = codePrimes;
-
-                    //CodeList = manager.GetDropDownScreeningFormula(1, codeDetail);
-                    //CodeList = context.PARAM_MAPPING_DTL.Where(d => d.MAP_PRODUCT == codeDetail.MAP_PRODUCT && d.MAP_TABLE_NAME == codeDetail.MAP_TABLE_NAME && d.CONFIG_WATCHLIST == 1).ToList();
-
-                    foreach (var CL in CodeList)
-                    {
-                        codeInfoFormula codeInfoFormula = new codeInfoFormula()
-                        {
-                            //mapProduct = CL.MAP_PRODUCT,
-                            columnName = CL.COLUMN_NAME,
-                            tableName = CL.TABLE_NAME
-                        };
-                        dropDownList.Add(codeInfoFormula);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    status = false;
-                    error_message = ex.InnerException.InnerException.Message;
-                    Console.WriteLine(ex.InnerException.InnerException.Message);
-                }
-                if (status == true)
-                {
-                    var obj = new codeInfoScreening
-                    {
-                    };
-                    return Json(new[] { new
-                {
-                    dropDownItems = dropDownList,
-                }});
-                }
-                else
-                {
-                    return Ok(new
-                    {
-                        status = false,
-                        error_message = "Error: " + error_message
-                    });
-                }
-
-                throw new HttpResponseException(HttpStatusCode.Unauthorized);
-            }
-        }
-
-        [HttpPost]
-        [Route("api/GetDDParamMapDtl")]
-        [ActionName("LoadNew")]
-        public IHttpActionResult GetDDParamMapDtl()
-        {
-            string formData;
-            using (var reader = new StreamReader(HttpContext.Current.Request.InputStream))
-            {
-                formData = reader.ReadToEnd();
-            }
-
-            var queryString = HttpUtility.ParseQueryString(HttpUtility.UrlDecode(formData));
-            var code_org = int.Parse(queryString["code_org"]);
-            var mapProduct = queryString["MAP_PRODUCT"];
-            var mapIdHdr = int.Parse(queryString["MAP_ID_HDR"]);
-
-            string[] splitmapProduct = mapProduct.Split('|');
-
-            var status = true;
-            var error_message = "";
-            List<string> s;
-            List<codeInfoParam> dropDownList = new List<codeInfoParam>();
-            List<_PARAM_MAPPING_DTL> CodeList = new List<_PARAM_MAPPING_DTL>();
-            _PARAM_MAPPING_DTL codeDetail = new _PARAM_MAPPING_DTL();
+            List<CodeConfig> codeList = new List<CodeConfig>();
 
             using (var context = new JobPortalContext())
             {
-                for (int i = 0; i < splitmapProduct.Length; i++)
-                {
-                    try
-                    {
-                        codeDetail.MAP_PRODUCT = int.Parse(mapProduct);
-                        codeDetail.MAP_ID_HDR = mapIdHdr;
-
-                        splitmapProduct[i] = splitmapProduct[i].Trim();
-                        var mapProducts = Int32.Parse(splitmapProduct[i]);
-                        codeDetail.MAP_PRODUCT = mapProducts;
-
-                        //CodeList = manager.GetDDParamMapDtl(1, codeDetail);
-                        CodeList = context.PARAM_MAPPING_DTL.Where(d => d.MAP_PRODUCT == codeDetail.MAP_PRODUCT && d.MAP_ID_HDR == codeDetail.MAP_ID_HDR && d.MAP_FIELD_NAME != "").ToList();
-
-                        foreach (var CL in CodeList)
-                        {
-                            codeInfoParam codeInfoParam = new codeInfoParam()
-                            {
-                                mapProduct = CL.MAP_PRODUCT,
-                                mapIdHdr = CL.MAP_ID_HDR,
-                                mapFieldDecs = CL.MAP_FIELD_DESC,
-                                mapFieldName = CL.MAP_FIELD_NAME
-                            };
-                            dropDownList.Add(codeInfoParam);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        status = false;
-                        error_message = ex.InnerException.InnerException.Message;
-                        Console.WriteLine(ex.InnerException.InnerException.Message);
-                    }
-                }
-                if (status == true)
-                {
-                    var obj = new codeInfoScreening
-                    {
-                    };
-                    return Json(new[] { new
-                {
-                    dropDownItems = dropDownList,
-                }});
-                }
-                else
-                {
-                    return Ok(new
-                    {
-                        status = false,
-                        error_message = "Error: " + error_message
-                    });
-                }
-
-                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+                codeList = context.CodeConfig.Where(x => x.PrimeCode == PrimeCode).ToList();
             }
+            return codeList;
         }
 
         public class codeInfo
@@ -1056,92 +555,6 @@ namespace JobPortal.Controllers
             public string mapFieldName { get; set; }
         }
 
-        // POST: api/JobPortal
-        [ResponseType(typeof(cor_code))]
-        public IHttpActionResult Postcor_code(cor_code cor_code)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            db.cor_code.Add(cor_code);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                if (cor_codeExists(cor_code.cor_CodeNo))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtRoute("DefaultApi", new { id = cor_code.cor_CodeNo }, cor_code);
-        }
-
-        #region "Insert into Audit Master"
-
-        public static bool AddAuditMaster(string auditUserId, string auditToken, int auditActivity, string auditActivityDesc, int compCode, int codeOrg)
-        {
-            var status = true;
-            var error_message = "";
-            _AUDIT_MASTER auditMasterDtl = new _AUDIT_MASTER(true);
-
-            using (var context = new JobPortalContext())
-            {
-                using (var txn = context.Database.BeginTransaction())
-                {
-                    try
-                    {
-                        //Insert Data
-                        auditMasterDtl.CODE_ORG = codeOrg;
-                        auditMasterDtl.AUDIT_USER_ID = auditUserId;
-                        auditMasterDtl.AUDIT_TOKEN = auditToken;
-                        auditMasterDtl.AUDIT_ACTIVITY = auditActivity;
-                        auditMasterDtl.AUDIT_ACTIVITY_DESC = auditActivityDesc;
-                        auditMasterDtl.CODE_COMP = compCode;
-                        context.AUDIT_MASTER.Add(auditMasterDtl);
-                        context.SaveChanges();
-
-                        txn.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        status = false;
-                        error_message = ex.Message;
-                        Console.WriteLine(ex.InnerException.InnerException.Message);
-                    }
-                }
-            }
-
-            return status;
-        }
-
-        #endregion "Insert into Audit Master"
-
-        // DELETE: api/JobPortal/5
-        [ResponseType(typeof(cor_code))]
-        public IHttpActionResult Deletecor_code(int id)
-        {
-            cor_code cor_code = db.cor_code.Find(id);
-            if (cor_code == null)
-            {
-                return NotFound();
-            }
-
-            db.cor_code.Remove(cor_code);
-            db.SaveChanges();
-
-            return Ok(cor_code);
-        }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -1149,11 +562,6 @@ namespace JobPortal.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-        private bool cor_codeExists(int id)
-        {
-            return db.cor_code.Count(e => e.cor_CodeNo == id) > 0;
         }
     }
 }
