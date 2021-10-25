@@ -15,7 +15,7 @@ namespace JobPortal.Models
 
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string JobTitle { get; set; }
+        public Int32 JobID { get; set; }
         public Int32? YearsExp { get; set; }
         public string PrefLocation { get; set; }
         public string VacancyFoundIn { get; set; }
@@ -23,6 +23,10 @@ namespace JobPortal.Models
         public string ContactNo { get; set; }
         public string Email { get; set; }
         public string Address { get; set; }
+        public DateTime? CreatedDt { get; set; }
+
+        [NotMapped]
+        public string JobTitle { get; set; }
     }
 
     [Table("Applicant")]
@@ -37,7 +41,7 @@ namespace JobPortal.Models
             ApplicantID = 0;
             FirstName = "";
             LastName = "";
-            JobTitle = "";
+            JobID = 0;
             YearsExp = 0;
             PrefLocation = "";
             VacancyFoundIn = "";
@@ -53,7 +57,7 @@ namespace JobPortal.Models
 
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string JobTitle { get; set; }
+        public Int32 JobID { get; set; }
         public Int32? YearsExp { get; set; }
         public string PrefLocation { get; set; }
         public string VacancyFoundIn { get; set; }
@@ -61,5 +65,9 @@ namespace JobPortal.Models
         public string ContactNo { get; set; }
         public string Email { get; set; }
         public string Address { get; set; }
+        public DateTime? CreatedDt { get; set; }
+
+        [NotMapped]
+        public string JobTitle { get; set; }
     }
 }

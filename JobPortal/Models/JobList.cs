@@ -12,6 +12,7 @@ namespace JobPortal.Models
         [Key, Column(Order = 0)]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Int32 JobID { get; set; }
+
         public string JobTitle { get; set; }
         public string JobType { get; set; }
         public string JobDescription { get; set; }
@@ -21,6 +22,9 @@ namespace JobPortal.Models
         public string Remarks { get; set; }
         public DateTime? CreatedDt { get; set; }
         public string CreatedBy { get; set; }
+
+        [NotMapped]
+        public Int32 SubmittedApplication { get; set; }
     }
 
     [Table("JobList")]
@@ -47,6 +51,7 @@ namespace JobPortal.Models
         [Key, Column(Order = 0)]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Int32 JobID { get; set; }
+
         public string JobTitle { get; set; }
         public string JobType { get; set; }
         public string JobDescription { get; set; }
@@ -56,5 +61,8 @@ namespace JobPortal.Models
         public string Remarks { get; set; }
         public DateTime? CreatedDt { get; set; }
         public string CreatedBy { get; set; }
+
+        [NotMapped]
+        public Int32 SubmittedApplication { get; set; }
     }
 }

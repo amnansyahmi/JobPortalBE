@@ -37,13 +37,37 @@ namespace JobPortal.Controllers
         [HttpGet]
         [Route("api/GetJobList")]
         [ActionName("LoadNew")]
-        public List<JobList> GetJobList()
+        public List<_JobList> GetJobList()
         {
-            List<JobList> jobList = new List<JobList>();
+            List<_JobList> jobList = new List<_JobList>();
 
             using (var context = new JobPortalContext())
             {
-                jobList = context.JobList.Select(s => s).ToList();
+                try
+                {
+                    //jobList = context.JobList.Select(s => s).ToList();
+                    jobList = (
+                        from j in context.JobList
+                        select new _JobList
+                        {
+                            JobID = j.JobID,
+                            JobTitle = j.JobTitle,
+                            JobType = j.JobType,
+                            JobDescription = j.JobDescription,
+                            SalaryRange = j.SalaryRange,
+                            PostedDt = j.PostedDt,
+                            ClosingDt = j.ClosingDt,
+                            Remarks = j.Remarks,
+                            CreatedDt = j.CreatedDt,
+                            CreatedBy = j.CreatedBy,
+                            SubmittedApplication = (from a in context.Applicant where a.JobID == j.JobID select a).Count()
+                        }).ToList();
+                }
+                catch (Exception ex)
+                {
+                    var error_message = ex.InnerException.InnerException.Message;
+                    Console.WriteLine(ex.InnerException.InnerException.Message);
+                }
             }
             return jobList;
         }
@@ -63,7 +87,7 @@ namespace JobPortal.Controllers
 
             var firstName = queryString["firstName"];
             var lastName = queryString["lastName"];
-            var jobId = queryString["jobId"];
+            var jobId = int.Parse(queryString["jobId"]);
             var yearsExp = queryString["yearsExp"];
             var prefLocation = queryString["prefLocation"];
             var vacancyFoundIn = queryString["vacancyFoundIn"];
@@ -92,7 +116,7 @@ namespace JobPortal.Controllers
                         //Insert Data
                         applicantDtl.FirstName = firstName;
                         applicantDtl.LastName = lastName;
-                        applicantDtl.JobTitle = jobId;
+                        applicantDtl.JobID = jobId;
                         applicantDtl.YearsExp = int.Parse(yearsExp);
                         applicantDtl.PrefLocation = prefLocation;
                         applicantDtl.VacancyFoundIn = vacancyFoundIn;
@@ -100,6 +124,7 @@ namespace JobPortal.Controllers
                         applicantDtl.ContactNo = contactNo;
                         applicantDtl.Address = address;
                         applicantDtl.Email = email;
+                        applicantDtl.CreatedDt = DateTime.Now;
                         context.Applicant.Add(applicantDtl);
                         context.SaveChanges();
 
@@ -221,6 +246,37 @@ namespace JobPortal.Controllers
                 skillList = context.Skills.Select(s => s).ToList();
             }
             return skillList;
+        }
+
+        [HttpGet]
+        [Route("api/GetApplicantDetails")]
+        [ActionName("LoadNew")]
+        public List<_Applicant> GetApplicantDetails(string email)
+        {
+            List<_Applicant> applicantList = new List<_Applicant>();
+
+            using (var context = new JobPortalContext())
+            {
+                applicantList = (from a in context.Applicant
+                                 where a.Email == email
+                                 select new _Applicant
+                                 {
+                                     ApplicantID = a.ApplicantID,
+                                     FirstName = a.FirstName,
+                                     LastName = a.LastName,
+                                     JobID = a.JobID,
+                                     YearsExp = a.YearsExp,
+                                     PrefLocation = a.PrefLocation,
+                                     VacancyFoundIn = a.VacancyFoundIn,
+                                     NoticePeriod = a.NoticePeriod,
+                                     ContactNo = a.ContactNo,
+                                     Email = a.Email,
+                                     Address = a.Address,
+                                     CreatedDt = a.CreatedDt,
+                                     JobTitle = context.JobList.Where(c => c.JobID == a.JobID).Select(b => b.JobTitle).ToList().FirstOrDefault(),
+                                 }).ToList();
+            }
+            return applicantList;
         }
     }
 }
