@@ -222,14 +222,6 @@
       <Project>{8f45ad71-9030-4287-8283-9838074ccc65}</Project>
       <Name>AdminQueryManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\QueryManager\OnboardQueryManager\OnboardQueryManager.csproj">
-      <Project>{6436c360-d706-4dfc-8fee-b883d14fe766}</Project>
-      <Name>OnboardQueryManager</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QueryManager\PeopleQueryManager\PeopleQueryManager.csproj">
-      <Project>{a73a3992-2626-4f3e-8744-12a767201798}</Project>
-      <Name>PeopleQueryManager</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
