@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using JobPortal.Models;
 using AdminQueryManager;
-using PeopleQueryManager;
 using JobPortal.Shares;
 
 namespace JobPortal.Shares

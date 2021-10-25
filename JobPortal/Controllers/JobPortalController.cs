@@ -43,6 +43,10 @@ namespace JobPortal.Controllers
 
             using (var context = new JobPortalContext())
             {
+                //using (var manager = new JobPortalManager(context))
+                //{
+                //    jobList = manager.GetJobList(1);
+                //}
                 try
                 {
                     //jobList = context.JobList.Select(s => s).ToList();
@@ -66,7 +70,6 @@ namespace JobPortal.Controllers
                 catch (Exception ex)
                 {
                     var error_message = ex.InnerException.InnerException.Message;
-                    Console.WriteLine(ex.InnerException.InnerException.Message);
                 }
             }
             return jobList;

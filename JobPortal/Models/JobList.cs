@@ -23,7 +23,7 @@ namespace JobPortal.Models
         public DateTime? CreatedDt { get; set; }
         public string CreatedBy { get; set; }
 
-        [NotMapped]
+        //[NotMapped]
         public Int32 SubmittedApplication { get; set; }
     }
 

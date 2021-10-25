@@ -183,6 +183,7 @@
     <Compile Include="Models\JobList.cs" />
     <Compile Include="Models\Skills.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\JobPortalManager.cs" />
     <Compile Include="Repositories\Manager.cs" />
     <Compile Include="Shares\JobPortalContext.cs" />
     <Compile Include="Shares\GlobalVariables.cs" />

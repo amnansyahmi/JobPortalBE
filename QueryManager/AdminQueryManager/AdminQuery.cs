@@ -8,18 +8,19 @@ namespace AdminQueryManager
 {
     public class AdminQuery
     {
-        public static string GetMenuDetail(Int32 SQLCase)
+        public static string GetJobList(Int32 SQLCase)
         {
             string sqlStatement = "";
 
             switch (SQLCase)
             {
                 case 1:
-                    sqlStatement = "SELECT * " +
-                          " FROM MENU " +
-                          " WHERE FLAG_ENABLE = 1";
+                    sqlStatement = "SELECT *, SubmittedApplication = (SELECT COUNT(*) FROM Applicant WHERE Applicant.JobID = JobList.JobID) FROM JobList";
                     break;
 
+                default:
+                    sqlStatement = "SELECT * FROM JobList";
+                    break;
                     // please revisit to optimize. doing this to avoid sql join.
             }
             return sqlStatement;
