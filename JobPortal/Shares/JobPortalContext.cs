@@ -25,10 +25,11 @@ namespace JobPortal.Shares
 
         #region DBSet
 
-        public DbSet<_CONFIG_CODES_DTL> CONFIG_CODES_DTL { get; set; }
         public DbSet<Applicant> Applicant { get; set; }
         public DbSet<JobList> JobList { get; set; }
         public DbSet<Attachment> Attachment { get; set; }
+        public DbSet<Skills> Skills { get; set; }
+        public DbSet<ApplicantSkill> ApplicantSkill { get; set; }
         public DbSet<CodeConfig> CodeConfig { get; set; }
 
         #endregion DBSet

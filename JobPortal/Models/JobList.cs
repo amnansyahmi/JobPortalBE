@@ -13,9 +13,11 @@ namespace JobPortal.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Int32 JobID { get; set; }
         public string JobTitle { get; set; }
+        public string JobType { get; set; }
         public string JobDescription { get; set; }
         public string SalaryRange { get; set; }
         public DateTime? PostedDt { get; set; }
+        public DateTime? ClosingDt { get; set; }
         public string Remarks { get; set; }
         public DateTime? CreatedDt { get; set; }
         public string CreatedBy { get; set; }
@@ -32,9 +34,11 @@ namespace JobPortal.Models
         {
             JobID = 0;
             JobTitle = "";
+            JobType = "";
             JobDescription = "";
             SalaryRange = "";
             PostedDt = DateTime.Now;
+            ClosingDt = DateTime.Now;
             Remarks = "";
             CreatedDt = DateTime.Now;
             CreatedBy = "";
@@ -43,11 +47,12 @@ namespace JobPortal.Models
         [Key, Column(Order = 0)]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Int32 JobID { get; set; }
-
         public string JobTitle { get; set; }
+        public string JobType { get; set; }
         public string JobDescription { get; set; }
         public string SalaryRange { get; set; }
         public DateTime? PostedDt { get; set; }
+        public DateTime? ClosingDt { get; set; }
         public string Remarks { get; set; }
         public DateTime? CreatedDt { get; set; }
         public string CreatedBy { get; set; }

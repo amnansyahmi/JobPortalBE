@@ -6,7 +6,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <_PublishTargetUrl>D:\PROJECT - SOURCE CODE\Azure DevOps\CORAL-ISEM-BE\AMLP\bin\Release</_PublishTargetUrl>
+    <_PublishTargetUrl>D:\PROJECT - SOURCE CODE\JobPortal\Backend\JobPortal\bin\Release</_PublishTargetUrl>
     <History>True|2021-10-06T02:41:28.0197852Z;False|2021-10-06T10:25:02.9307969+08:00;True|2021-07-09T00:14:03.5515503+08:00;True|2021-07-06T22:19:08.6280097+08:00;True|2021-07-05T13:29:07.7246258+08:00;True|2021-07-05T13:25:35.3042323+08:00;True|2021-07-03T18:32:15.1030053+08:00;</History>
   </PropertyGroup>
   <ItemGroup>
@@ -2441,10 +2441,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/13/2021 10:25:50</publishTime>
     </File>
     <File Include="bin/App_global.asax.compiled">
-      <publishTime>10/06/2021 11:09:12</publishTime>
+      <publishTime>10/25/2021 18:06:43</publishTime>
     </File>
     <File Include="bin/App_global.asax.dll">
-      <publishTime>10/06/2021 11:09:12</publishTime>
+      <publishTime>10/25/2021 18:06:43</publishTime>
     </File>
     <File Include="bin/DUGScreening2.dll">
       <publishTime>12/04/2019 13:49:14</publishTime>
@@ -2466,6 +2466,12 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="bin/EntityFramework.xml">
       <publishTime>09/14/2019 17:01:14</publishTime>
+    </File>
+    <File Include="bin/JobPortal.dll">
+      <publishTime>10/25/2021 16:59:41</publishTime>
+    </File>
+    <File Include="bin/JobPortal.pdb">
+      <publishTime>10/25/2021 16:59:41</publishTime>
     </File>
     <File Include="bin/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll">
       <publishTime>01/13/2021 10:25:55</publishTime>
@@ -2501,16 +2507,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/22/2019 00:57:26</publishTime>
     </File>
     <File Include="bin/OnboardQueryManager.dll">
-      <publishTime>06/10/2021 10:41:10</publishTime>
+      <publishTime>10/25/2021 14:43:09</publishTime>
     </File>
     <File Include="bin/OnboardQueryManager.pdb">
-      <publishTime>06/10/2021 10:41:10</publishTime>
+      <publishTime>10/25/2021 14:43:09</publishTime>
     </File>
     <File Include="bin/PeopleQueryManager.dll">
-      <publishTime>06/10/2021 10:41:10</publishTime>
+      <publishTime>10/25/2021 14:43:09</publishTime>
     </File>
     <File Include="bin/PeopleQueryManager.pdb">
-      <publishTime>06/10/2021 10:41:10</publishTime>
+      <publishTime>10/25/2021 14:43:09</publishTime>
     </File>
     <File Include="bin/PortfolioQueryManager.dll">
       <publishTime>06/10/2021 10:41:09</publishTime>
@@ -4166,7 +4172,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/30/2020 13:41:54</publishTime>
     </File>
     <File Include="PrecompiledApp.config">
-      <publishTime>10/06/2021 11:09:05</publishTime>
+      <publishTime>10/25/2021 18:06:36</publishTime>
     </File>
     <File Include="Properties/PublishProfiles/AMLPDeploy.pubxml">
       <publishTime>06/05/2020 13:05:43</publishTime>
@@ -4190,7 +4196,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/13/2021 10:25:34</publishTime>
     </File>
     <File Include="Scripts/jquery-3.4.1.min.map">
-      <publishTime>01/13/2021 10:25:34</publishTime>
+      <publishTime>10/23/2021 00:53:04</publishTime>
     </File>
     <File Include="Scripts/jquery-3.4.1.slim.js">
       <publishTime>01/13/2021 10:25:34</publishTime>
@@ -4199,7 +4205,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/13/2021 10:25:34</publishTime>
     </File>
     <File Include="Scripts/jquery-3.4.1.slim.min.map">
-      <publishTime>01/13/2021 10:25:34</publishTime>
+      <publishTime>10/23/2021 00:49:55</publishTime>
     </File>
     <File Include="Scripts/jquery.validate-vsdoc.js">
       <publishTime>02/24/2020 17:05:57</publishTime>
@@ -4226,13 +4232,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/13/2021 10:25:34</publishTime>
     </File>
     <File Include="Views/web.config">
-      <publishTime>01/13/2021 10:25:34</publishTime>
+      <publishTime>10/23/2021 00:53:06</publishTime>
     </File>
     <File Include="Views/_ViewStart.cshtml">
       <publishTime>01/13/2021 10:25:34</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>06/10/2021 10:44:38</publishTime>
+      <publishTime>10/25/2021 16:48:27</publishTime>
     </File>
     <File Include="Web.Debug.config">
       <publishTime>10/09/2019 09:29:30</publishTime>

@@ -1,42 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Web;
-using Newtonsoft.Json;
+﻿using System.Configuration;
 
 namespace JobPortal.Shares
 {
-    public enum FindingTypes
-    {
-        SanctionPortCities = 1, Watchlist = 2, DUG = 3
-    }
-
-    public enum TNCStatus
-    {
-        Outstanding = 1, Completed = 2
-    }
-
-    public enum ApprovalStatus
-    {
-        None = 0, Pending = 1, Reject = 2, Approve = 3
-    }
-
-    public enum WatchlistOnBoardStatus
-    {
-        None = 0, Pending = 1, Reject = 2, Relase = 3, Escalate = 6
-    }
-
-    public enum MessageScanStatus
-    {
-        NoHit = 0, HitEntity = 1, Release = 2, ConfirmHit = 3, PendingApproval = 7, PendingRelease = 8, MsgError = 9
-    }
-
-    public enum MessageActionStatus
-    {
-        NoHit = 0, HitEntity = 1, Release = 2, ConfirmHit = 3, PendingApproval = 7, PendingRelease = 8, MsgError = 9
-    }
-
     public enum ConnectionProviders
     {
         Unknown
@@ -44,27 +9,13 @@ namespace JobPortal.Shares
         , OleDb
     }
 
-    public enum WatchListType
-    {
-        DJ = 2170
-        , WC = 2720
-        , STD = 2610
-        , LNX = 2740
-    }
-
     public static class GlobalVariables
     {
         public static readonly string AuthUser = ConfigurationManager.AppSettings["AuthUser"];
         public static readonly string AuthPswd = ConfigurationManager.AppSettings["AuthPswd"];
-        public static readonly string RecoverAccessLink = ConfigurationManager.AppSettings["RecoverAccessLink"];
-        public static string GlobalUsedWatchListType = "DJ";
-        public static Int16 GlobalInsertWatchlistLogger = Int16.Parse(ConfigurationManager.AppSettings["InsertWatchlistLogger"]);
 
         public static string[] GlobalErrorMessage = new string[100];
         public static string[] GlobalAuditMessage = new string[25];
-        public static int ScanCountryTable = int.Parse(ConfigurationManager.AppSettings["ScanCountryTable"]);
-        public static readonly Int16 CompanyCode = SystemUtility.ConvertToInt<Int16>(ConfigurationManager.AppSettings["CompanyCode"]);
-        public static string FilterSetting = ConfigurationManager.AppSettings["FilterSetting"];
 
         public static readonly string ConnectionString = ConfigurationManager.ConnectionStrings["JobPortalDB"].ConnectionString;   //.ConnectionStrings["JobPortalDB"];
 
@@ -87,9 +38,9 @@ namespace JobPortal.Shares
             get
             {
                 if (ConnectionProvider == ConnectionProviders.Sql)
-                    return "TBMLContext";
+                    return "JobPortalContext";
                 else if (ConnectionProvider == ConnectionProviders.OleDb)
-                    return "TBMLContextOleDb";
+                    return "JobPortalContextOleDb";
                 else
                     return "";
             }
