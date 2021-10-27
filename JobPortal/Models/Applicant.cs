@@ -27,6 +27,12 @@ namespace JobPortal.Models
 
         [NotMapped]
         public string JobTitle { get; set; }
+
+        [NotMapped]
+        public string Attachment { get; set; }
+
+        [NotMapped]
+        public string AttachmentName { get; set; }
     }
 
     [Table("Applicant")]
@@ -69,5 +75,11 @@ namespace JobPortal.Models
 
         [NotMapped]
         public string JobTitle { get; set; }
+
+        [NotMapped]
+        public string Attachment { get; set; }
+
+        [NotMapped]
+        public string AttachmentName { get; set; }
     }
 }

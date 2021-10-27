@@ -277,6 +277,8 @@ namespace JobPortal.Controllers
                                      Address = a.Address,
                                      CreatedDt = a.CreatedDt,
                                      JobTitle = context.JobList.Where(c => c.JobID == a.JobID).Select(b => b.JobTitle).ToList().FirstOrDefault(),
+                                     Attachment = context.Attachment.Where(d => d.ApplicantID == a.ApplicantID).Select(x => x.FileEncode).ToList().FirstOrDefault(),
+                                     AttachmentName = context.Attachment.Where(d => d.ApplicantID == a.ApplicantID).Select(x => x.FilePath).ToList().FirstOrDefault()
                                  }).ToList();
             }
             return applicantList;
